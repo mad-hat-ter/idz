@@ -1,8 +1,25 @@
-Start:
-docker compose ps
+# Итоговое домашнее задание «Основы виртуализации и контейнеризации»
+
+## Запуск проекта
+
+Запуск: docker compose up -d
+
+Проверка работы: docker compose ps
+
+## VM
+- **ОС:** Ubuntu Server 25.04 LTS
+- **CPU:** 4 vCPU
+- **RAM:** 4 ГБ
+- **Диск:** 25 ГБ
+- **Сеть:** Сетевой мост
+- **Пользователь:** `seconduser` с правами `sudo`
+- **Firewall:** UFW разрешает SSH и порт 80
+
+## Информация о VM
 
 1. hostnamectl
 
+```
  Static hostname: vboxuser
        Icon name: computer-vm
          Chassis: vm 🖴
@@ -18,9 +35,11 @@ Hardware Version: 1.2
 Firmware Version: VirtualBox
    Firmware Date: Fri 2006-12-01
     Firmware Age: 19y 6month 6d                   
+```
 
 2. ip a
 
+```
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -56,9 +75,11 @@ Firmware Version: VirtualBox
     link/ether ce:d4:2d:72:6c:8d brd ff:ff:ff:ff:ff:ff link-netnsid 2
     inet6 fe80::ccd4:2dff:fe72:6c8d/64 scope link proto kernel_ll 
        valid_lft forever preferred_lft forever
+```
 
 3. docker version
 
+```
 Client: Docker Engine - Communit
  Version:           29.5.3
  API version:       1.54
@@ -86,6 +107,7 @@ Server: Docker Engine - Community
  docker-init:
   Version:          0.19.0
   GitCommit:        de40ad0
+```
 
 4. docker compose version
 
@@ -93,16 +115,34 @@ Docker Compose version v5.1.4
 
 5. docker compose ps
 
+```
 NAME          IMAGE                COMMAND                  SERVICE   CREATED         STATUS                   PORTS
 idz-app-1     traefik/whoami       "/whoami"                app       6 minutes ago   Up 6 minutes             80/tcp
 idz-db-1      postgres:15-alpine   "docker-entrypoint.s…"   db        6 minutes ago   Up 6 minutes (healthy)   5432/tcp
 idz-proxy-1   nginx:alpine         "/docker-entrypoint.…"   proxy     6 minutes ago   Up 6 minutes             0.0.0.0:80->80/tcp, [::]:80->80/tcp
+```
 
 6. curl -I http://localhost/
-
+   
+```
 HTTP/1.1 200 OK
 Server: nginx/1.31.1
 Date: Sun, 07 Jun 2026 22:15:16 GMT
 Content-Type: text/plain; charset=utf-8
 Content-Length: 157
 Connection: keep-alive
+```
+
+7. curl http://192.168.0.135/
+
+```
+Hostname: cb86965583e3
+IP: 127.0.0.1
+IP: ::1
+IP: 172.18.0.3
+RemoteAddr: 172.18.0.4:55380
+GET / HTTP/1.1
+Host: app
+User-Agent: curl/8.18.0
+Accept: */*
+```
