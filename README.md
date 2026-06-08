@@ -7,7 +7,7 @@
 Проверка работы: docker compose ps
 
 ## VM
-- **ОС:** Ubuntu Server 25.04 LTS
+- **ОС:** Ubuntu Server 26.04 LTS
 - **CPU:** 4 vCPU
 - **RAM:** 4 ГБ
 - **Диск:** 25 ГБ
@@ -145,4 +145,56 @@ GET / HTTP/1.1
 Host: app
 User-Agent: curl/8.18.0
 Accept: */*
+```
+8. Подключение по SSH
+
+```
+PS C:\Users\user>    ssh seconduser@192.168.0.135
+
+The authenticity of host '192.168.0.135 (192.168.0.135)' can't be established.
+ED25519 key fingerprint is SHA256:UUhmS7jf/Ps4HVb5VBGLrndW7kF03G+ywiijg9g+i60.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.0.135' (ED25519) to the list of known hosts.
+seconduser@192.168.0.135's password:
+Welcome to Ubuntu 26.04 LTS (GNU/Linux 7.0.0-22-generic x86_64)
+
+ * Documentation:  https://docs.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+```
+9. Проверка персистентности БД
+    
+```
+seconduser@vboxuser:~/idz$ docker compose exec db psql -U postgres -c "CREATE TABLE test (id serial PRIMARY KEY, name text);"
+CREATE TABLE
+seconduser@vboxuser:~/idz$ docker compose exec db psql -U postgres -c "INSERT INTO test (name) VALUES ('TEST');"
+INSERT 0 1
+seconduser@vboxuser:~/idz$ docker compose down
+seconduser@vboxuser:~/idz$ docker compose up -d
+[+] up 4/4
+ ✔ Network idz_idz_network Created                                                                                  0.5s
+ ✔ Container idz-app-1     Started                                                                                  2.0s
+ ✔ Container idz-db-1      Started                                                                                  2.0s
+ ✔ Container idz-proxy-1   Started                                                                                  2.1s
+seconduser@vboxuser:~/idz$ docker compose exec db psql -U postgres -c "SELECT * FROM test;"
+ id | name
+----+------
+  1 | TEST
+(1 row)
 ```
